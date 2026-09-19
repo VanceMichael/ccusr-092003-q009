@@ -1,0 +1,19 @@
+{
+  "schema_version": "1",
+  "domain": "分层口腔服务覆盖复算",
+  "required_fields": [
+    "resident_token",
+    "district_code",
+    "service_kind",
+    "age_group",
+    "occurred_at",
+    "source_sequence"
+  ],
+  "time_format": "ISO 8601 with offset",
+  "sample": {
+    "resident_token": "TOKEN-DEMO",
+    "district_code": "DIST-A",
+    "service_kind": "screening",
+    "age_group": "child"
+  }
+}
