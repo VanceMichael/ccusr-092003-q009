@@ -1,19 +1,47 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "domain": "分层口腔服务覆盖复算",
+  "time_format": "ISO 8601 with offset",
+  "identity_policy": {
+    "resident_token": "不可逆居民引用：机构侧盐化哈希（sha256），平台不接收姓名、证件号等可逆标识",
+    "token_pattern": "^sha256:[0-9a-f]{64}$",
+    "cross_org_alignment": "同一居民跨机构引用由市级统一盐值方案对齐；平台仅见令牌，无法还原身份"
+  },
   "required_fields": [
     "resident_token",
-    "district_code",
     "service_kind",
     "age_group",
     "occurred_at",
     "source_sequence"
   ],
-  "time_format": "ISO 8601 with offset",
+  "optional_fields": [
+    "quality_mark",
+    "corrects_event_id",
+    "correction_reason"
+  ],
+  "server_supplied_fields": [
+    "event_id",
+    "org_code",
+    "district_code",
+    "received_at"
+  ],
+  "enums": {
+    "service_kind": ["screening", "guidance", "intervention"],
+    "age_group": ["child", "adult", "senior"],
+    "quality_mark": ["normal", "deficient"]
+  },
+  "immutability": "事件仅追加；迟到数据与更正以新事实进入（source_sequence 单调递增），原上报 raw_json 不更新、不删除",
+  "field_notes": {
+    "source_sequence": "机构内单调递增序列号，与 org_code 共同构成幂等键，重复提交返回既有事件",
+    "corrects_event_id": "更正时填写被更正事件的 event_id；被更正事件标记为 superseded 但保留",
+    "occurred_at": "服务实际发生时间（带偏移量 ISO 8601），用于迟到判定与年度归属；received_at 为平台收报时间，构成数据水位"
+  },
   "sample": {
-    "resident_token": "TOKEN-DEMO",
-    "district_code": "DIST-A",
+    "resident_token": "sha256:9f2d2e0a56b34b1a7c44481cb27dd47be9d1ea1faf71fe0c0ec008b25ec333a1",
     "service_kind": "screening",
-    "age_group": "child"
+    "age_group": "child",
+    "occurred_at": "2025-03-12T09:30:00+08:00",
+    "source_sequence": 0,
+    "quality_mark": "normal"
   }
 }

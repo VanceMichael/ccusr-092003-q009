@@ -1,6 +1,26 @@
-{
-  "resident_token": "TOKEN-DEMO",
-  "district_code": "DIST-A",
-  "service_kind": "screening",
-  "age_group": "child"
-}
+[
+  {
+    "resident_token": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "service_kind": "screening",
+    "age_group": "child",
+    "occurred_at": "2025-03-12T09:30:00+08:00",
+    "source_sequence": 0,
+    "quality_mark": "normal"
+  },
+  {
+    "resident_token": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "service_kind": "guidance",
+    "age_group": "child",
+    "occurred_at": "2025-09-20T14:00:00+08:00",
+    "source_sequence": 1,
+    "quality_mark": "normal"
+  },
+  {
+    "resident_token": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+    "service_kind": "screening",
+    "age_group": "senior",
+    "occurred_at": "2025-11-05T10:15:00+08:00",
+    "source_sequence": 2,
+    "quality_mark": "deficient"
+  }
+]
