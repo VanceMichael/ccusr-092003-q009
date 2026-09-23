@@ -1,6 +1,9 @@
 {
-  "resident_token": "TOKEN-DEMO",
-  "district_code": "DIST-A",
+  "resident_token": "TOKEN-DEMO-IRREVERSIBLE",
   "service_kind": "screening",
-  "age_group": "child"
+  "age_group": "child",
+  "occurred_at": "2025-03-01T10:00:00+08:00",
+  "quality_flag": "ok",
+  "source_sequence": 1042,
+  "idempotency_key": "fac-F1-2025-1042"
 }

@@ -1,19 +1,67 @@
 {
-  "schema_version": "1",
+  "schema_version": "2",
   "domain": "分层口腔服务覆盖复算",
-  "required_fields": [
-    "resident_token",
-    "district_code",
-    "service_kind",
-    "age_group",
-    "occurred_at",
-    "source_sequence"
-  ],
-  "time_format": "ISO 8601 with offset",
-  "sample": {
-    "resident_token": "TOKEN-DEMO",
-    "district_code": "DIST-A",
-    "service_kind": "screening",
-    "age_group": "child"
+  "event_fields": {
+    "resident_token": {
+      "type": "string",
+      "required": true,
+      "note": "机构侧不可逆居民引用；平台落库前再经 HMAC-SHA256(RESIDENT_PEPPER) 摘要，永不存原文"
+    },
+    "service_kind": {
+      "type": "enum",
+      "values": ["screening", "guidance", "intervention"],
+      "required": true
+    },
+    "age_group": {
+      "type": "enum",
+      "values": ["child", "adolescent", "adult", "senior"],
+      "required": true
+    },
+    "occurred_at": {
+      "type": "string",
+      "format": "ISO 8601 with offset",
+      "required": true,
+      "note": "服务发生时间；拒绝无时区写法与不存在的日期"
+    },
+    "quality_flag": {
+      "type": "enum",
+      "values": ["ok", "provisional", "invalid"],
+      "required": false,
+      "default": "ok",
+      "note": "所有有效记录计人次；规则版本 excluded_quality_flags 内的标记不计入覆盖类人员指标"
+    },
+    "source_sequence": {
+      "type": "integer >= 0",
+      "required": true,
+      "note": "机构内单调序号"
+    },
+    "idempotency_key": {
+      "type": "string",
+      "required": true,
+      "note": "(facility_id, idempotency_key) 唯一；重放返回原事件，不产生新事实"
+    },
+    "fact_action": {
+      "type": "enum",
+      "values": ["report", "correction", "retraction"],
+      "required": false,
+      "default": "report",
+      "note": "更正/撤回必须以新事实进入并携带 target_event_id 指向本机构原始 report"
+    }
+  },
+  "identity_from_credentials": ["district_code", "facility_id"],
+  "metrics": {
+    "encounters": "有效记录条数（含全部质量标记）",
+    "persons": "有效合格记录按居民摘要去重后的人数，跨机构复诊只计 1 人",
+    "first_coverage": "年内首条合格记录之前 first_visit_gap_days 天内无任何合格记录的人数",
+    "continuous_management": "年内至少 2 次合格服务，且相邻间隔（含与上年末次间隔）不超过 continuity_window_days 的人数"
+  },
+  "privacy_controls": {
+    "district_isolation": "district 凭据强制作用于本区，参数无法覆盖",
+    "min_cell_size": "研究导出时任一分组去重人数低于 min_cell_size 整体拒绝（422），拒绝负载不含人数与居民标识",
+    "aggregation_only": "所有对外端点只返回聚合数与机构贡献清单，不返回 resident_token 或库内摘要"
+  },
+  "publication_model": {
+    "freeze": "发布固定 rule_version_code、统计区间与 received_at 水位并物化指标",
+    "revision": "冻结后补报只能前进水位生成修订版，附逐格 from/to/delta 差异说明，原版不可变"
   }
 }
